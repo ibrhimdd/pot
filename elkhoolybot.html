@@ -3,30 +3,47 @@
 <head>
 <meta charset="UTF-8">
 <title>تجربة مرشد الكلية</title>
+<style>
+body{
+    font-family: Arial;
+    text-align:center;
+    margin-top:80px;
+}
+button{
+    padding:15px 30px;
+    font-size:20px;
+    cursor:pointer;
+    border:none;
+    border-radius:12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color:white;
+}
+</style>
 </head>
-
-<body style="text-align:center;margin-top:80px">
+<body>
 
 <h2>🎓 تجربة مرشد الكلية الصوتي</h2>
 
-<script>
-(function () {
+<button id="startBtn">ابدأ التحدث 🎤</button>
+<p id="status">الحالة: متوقف</p>
 
-  const script = document.createElement("script");
-  script.src = "https://unpkg.com/@vapi-ai/web/dist/embed.js";
-  script.async = true;
+<script type="module">
+import { Vapi } from "https://cdn.jsdelivr.net/npm/@vapi-ai/web/+esm";
 
-  script.onload = () => {
-    window.vapiEmbed.run({
-      apiKey: "d4fd3957-f837-4575-9559-c04fd27c96e5",
-      assistant: "ec5dc0db-b781-446c-be4f-34516bb58e92"
-    });
-  };
+// ✅ مفتاح API
+const vapi = new Vapi("d4fd3957-f837-4575-9559-c04fd27c96e5");
 
-  document.body.appendChild(script);
+// ✅ Assistant ID
+const assistantId = "ec5dc0db-b781-446c-be4f-34516bb58e92";
 
-})();
-</script>
+const startBtn = document.getElementById("startBtn");
+const status = document.getElementById("status");
 
-</body>
-</html>
+startBtn.onclick = async () => {
+    status.innerText = "🎙️ جاري التشغيل...";
+    try {
+        await vapi.start(assistantId);
+        status.innerText = "🎙️ البوت يعمل الآن";
+    } catch(e){
+        console.error(e);
+        status.innerText = "❌ حدث خطأ عند التشغيل";
