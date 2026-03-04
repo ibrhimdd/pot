@@ -8,15 +8,17 @@
 body{
     font-family: Arial;
     text-align:center;
-    padding-top:80px;
+    margin-top:80px;
 }
 
 button{
     padding:15px 25px;
     font-size:18px;
     margin:10px;
+    cursor:pointer;
 }
 </style>
+
 </head>
 
 <body>
@@ -24,42 +26,36 @@ button{
 <h2>🎓 مرشد الكلية الذكي</h2>
 
 <button id="start">ابدأ التحدث</button>
-<button id="stop">إنهاء</button>
+<button id="stop">إنهاء المكالمة</button>
 
-<p id="status">متوقف</p>
+<p id="status">الحالة: متوقف</p>
 
 <script type="module">
 
-import { Vapi } from "https://cdn.jsdelivr.net/npm/@vapi-ai/web/+esm";
+// ✅ الاستيراد الصحيح
+import Vapi from "https://cdn.jsdelivr.net/npm/@vapi-ai/web/dist/index.js";
 
-// ✅ Public Key
-const vapi = new Vapi({
-  apiKey: "d4fd3957-f837-4575-9559-c04fd27c96e5"
-});
+const vapi = new Vapi("d4fd3957-f837-4575-9559-c04fd27c96e5");
 
-// ✅ Assistant ID
 const assistantId =
 "ec5dc0db-b781-446c-be4f-34516bb58e92";
 
+document.getElementById("start").addEventListener("click", async () => {
+    try{
+        await vapi.start(assistantId);
+        document.getElementById("status").innerText="🎙️ البوت يعمل الآن";
+    }catch(e){
+        console.error(e);
+    }
+});
 
-document.getElementById("start").onclick = async () => {
-  try {
-    await vapi.start(assistantId);
-    document.getElementById("status").innerText="🎙️ البوت يعمل";
-  } catch(err){
-    console.error(err);
-  }
-};
+document.getElementById("stop").addEventListener("click", () => {
+    vapi.stop();
+    document.getElementById("status").innerText="تم الإيقاف";
+});
 
-document.getElementById("stop").onclick = () => {
-  vapi.stop();
-  document.getElementById("status").innerText="تم الإيقاف";
-};
-
-
-// Events
-vapi.on("call-start", () => console.log("Call started"));
-vapi.on("call-end", () => console.log("Call ended"));
+vapi.on("call-start", () => console.log("Started"));
+vapi.on("call-end", () => console.log("Ended"));
 
 </script>
 
