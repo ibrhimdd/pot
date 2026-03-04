@@ -4,18 +4,12 @@
 <meta charset="UTF-8">
 <title>مرشد الكلية الذكي</title>
 
-<script src="https://unpkg.com/@vapi-ai/web/dist/vapi.js"></script>
-
 <style>
 body{
     font-family: Arial;
     background:#f4f6f9;
     text-align:center;
     padding-top:80px;
-}
-
-h1{
-    color:#333;
 }
 
 button{
@@ -27,20 +21,8 @@ button{
     margin:10px;
 }
 
-.start{
-    background:#28a745;
-    color:white;
-}
-
-.stop{
-    background:#dc3545;
-    color:white;
-}
-
-#status{
-    margin-top:20px;
-    font-size:20px;
-}
+.start{ background:#28a745;color:white;}
+.stop{ background:#dc3545;color:white;}
 </style>
 
 </head>
@@ -49,12 +31,14 @@ button{
 
 <h1>🎓 مرشد الكلية الذكي</h1>
 
-<button class="start" onclick="startCall()">ابدأ التحدث</button>
-<button class="stop" onclick="stopCall()">إنهاء المكالمة</button>
+<button onclick="startCall()" class="start">ابدأ التحدث</button>
+<button onclick="stopCall()" class="stop">إنهاء المكالمة</button>
 
 <p id="status">الحالة: متوقف</p>
 
-<script>
+<script type="module">
+
+import Vapi from "https://cdn.jsdelivr.net/npm/@vapi-ai/web/+esm";
 
 // ✅ Public Key
 const vapi = new Vapi("d4fd3957-f837-4575-9559-c04fd27c96e5");
@@ -62,32 +46,24 @@ const vapi = new Vapi("d4fd3957-f837-4575-9559-c04fd27c96e5");
 // ✅ Assistant ID
 const assistantId = "ec5dc0db-b781-446c-be4f-34516bb58e92";
 
-function startCall(){
-    vapi.start(assistantId);
-    document.getElementById("status").innerText = "🎙️ البوت يعمل الآن...";
+window.startCall = async () => {
+    try{
+        await vapi.start(assistantId);
+        document.getElementById("status").innerText="🎙️ البوت يعمل...";
+    }catch(e){
+        console.error(e);
+        alert("حصل خطأ — افتح Console");
+    }
 }
 
-function stopCall(){
+window.stopCall = () => {
     vapi.stop();
-    document.getElementById("status").innerText = "⛔ تم إنهاء المكالمة";
+    document.getElementById("status").innerText="⛔ تم الإيقاف";
 }
 
 // Events
-vapi.on("call-start", () => {
-    console.log("Call Started");
-});
-
-vapi.on("call-end", () => {
-    console.log("Call Ended");
-});
-
-vapi.on("speech-start", () => {
-    console.log("Assistant Speaking");
-});
-
-vapi.on("speech-end", () => {
-    console.log("Assistant Finished");
-});
+vapi.on("call-start", () => console.log("Started"));
+vapi.on("call-end", () => console.log("Ended"));
 
 </script>
 
