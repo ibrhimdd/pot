@@ -7,7 +7,6 @@
 <style>
 body{
     font-family: Arial;
-    background:#f4f6f9;
     text-align:center;
     padding-top:80px;
 }
@@ -15,55 +14,52 @@ body{
 button{
     padding:15px 25px;
     font-size:18px;
-    border:none;
-    border-radius:10px;
-    cursor:pointer;
     margin:10px;
 }
-
-.start{ background:#28a745;color:white;}
-.stop{ background:#dc3545;color:white;}
 </style>
-
 </head>
 
 <body>
 
-<h1>🎓 مرشد الكلية الذكي</h1>
+<h2>🎓 مرشد الكلية الذكي</h2>
 
-<button onclick="startCall()" class="start">ابدأ التحدث</button>
-<button onclick="stopCall()" class="stop">إنهاء المكالمة</button>
+<button id="start">ابدأ التحدث</button>
+<button id="stop">إنهاء</button>
 
-<p id="status">الحالة: متوقف</p>
+<p id="status">متوقف</p>
 
 <script type="module">
 
-import Vapi from "https://cdn.jsdelivr.net/npm/@vapi-ai/web/+esm";
+import { Vapi } from "https://cdn.jsdelivr.net/npm/@vapi-ai/web/+esm";
 
 // ✅ Public Key
-const vapi = new Vapi("d4fd3957-f837-4575-9559-c04fd27c96e5");
+const vapi = new Vapi({
+  apiKey: "d4fd3957-f837-4575-9559-c04fd27c96e5"
+});
 
 // ✅ Assistant ID
-const assistantId = "ec5dc0db-b781-446c-be4f-34516bb58e92";
+const assistantId =
+"ec5dc0db-b781-446c-be4f-34516bb58e92";
 
-window.startCall = async () => {
-    try{
-        await vapi.start(assistantId);
-        document.getElementById("status").innerText="🎙️ البوت يعمل...";
-    }catch(e){
-        console.error(e);
-        alert("حصل خطأ — افتح Console");
-    }
-}
 
-window.stopCall = () => {
-    vapi.stop();
-    document.getElementById("status").innerText="⛔ تم الإيقاف";
-}
+document.getElementById("start").onclick = async () => {
+  try {
+    await vapi.start(assistantId);
+    document.getElementById("status").innerText="🎙️ البوت يعمل";
+  } catch(err){
+    console.error(err);
+  }
+};
+
+document.getElementById("stop").onclick = () => {
+  vapi.stop();
+  document.getElementById("status").innerText="تم الإيقاف";
+};
+
 
 // Events
-vapi.on("call-start", () => console.log("Started"));
-vapi.on("call-end", () => console.log("Ended"));
+vapi.on("call-start", () => console.log("Call started"));
+vapi.on("call-end", () => console.log("Call ended"));
 
 </script>
 
