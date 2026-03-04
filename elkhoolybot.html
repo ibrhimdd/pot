@@ -3,53 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <title>مرشد الكلية الذكي</title>
-
-<script src="https://cdn.vapi.ai/sdk.js"></script>
-
-<style>
-body{
-    font-family: Arial;
-    text-align:center;
-    margin-top:80px;
-}
-
-button{
-    padding:15px 25px;
-    font-size:18px;
-    margin:10px;
-    cursor:pointer;
-}
-</style>
-
 </head>
 
-<body>
+<body style="text-align:center;margin-top:80px">
 
 <h2>🎓 مرشد الكلية الذكي</h2>
 
-<button onclick="startCall()">ابدأ التحدث</button>
-<button onclick="stopCall()">إنهاء المكالمة</button>
+<button id="start">ابدأ التحدث</button>
+<button id="stop">إنهاء</button>
 
 <p id="status">الحالة: متوقف</p>
 
-<script>
+<script type="module">
 
-const vapi = window.vapiSDK.run({
-  apiKey: "d4fd3957-f837-4575-9559-c04fd27c96e5"
-});
+import Vapi from "https://unpkg.com/@vapi-ai/web?module";
 
+// ✅ Public Key
+const vapi = new Vapi(
+  "d4fd3957-f837-4575-9559-c04fd27c96e5"
+);
+
+// ✅ Assistant
 const assistantId =
 "ec5dc0db-b781-446c-be4f-34516bb58e92";
 
-async function startCall(){
-  await vapi.start(assistantId);
-  document.getElementById("status").innerText="🎙️ البوت يعمل الآن";
-}
 
-function stopCall(){
+document.getElementById("start").onclick = async () => {
+  await vapi.start(assistantId);
+  document.getElementById("status").innerText="🎙️ يعمل الآن";
+};
+
+document.getElementById("stop").onclick = () => {
   vapi.stop();
   document.getElementById("status").innerText="تم الإيقاف";
-}
+};
+
+vapi.on("call-start",()=>console.log("started"));
+vapi.on("call-end",()=>console.log("ended"));
 
 </script>
 
